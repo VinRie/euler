@@ -67,7 +67,7 @@ def init():
             comment_begin = ''
             comment_end = ''
 
-    for problem_number in range(1, euler_problem_count):
+    for problem_number in range(1, euler_problem_count+1):
         download_string = euler_base_url \
                 + str(problem_number)
 
