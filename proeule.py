@@ -68,6 +68,21 @@ def init():
             comment_end = ''
 
     for problem_number in range(1, euler_problem_count+1):
+
+        # set the filename
+        if problem_number < 10:
+            filename = "problem00" + str(problem_number) + file_ending
+        elif problem_number < 100:
+            filename = "problem0" + str(problem_number) + file_ending
+        else:
+            filename = "problem" + str(problem_number) + file_ending
+        
+        filename = directory_path + filename
+        
+        if os.path.exists(filename) and not app.pargs.overwrite:
+            app.log.info('problem already exists skipping file')
+            continue 
+        
         download_string = euler_base_url \
                 + str(problem_number)
 
@@ -100,16 +115,6 @@ def init():
         
         content = comment_begin + '\n' +  content + '\n' + comment_end
 
-
-        # set the filename
-        if problem_number < 10:
-            filename = "problem00" + str(problem_number) + file_ending
-        elif problem_number < 100:
-            filename = "problem0" + str(problem_number) + file_ending
-        else:
-            filename = "problem" + str(problem_number) + file_ending
-
-        filename = directory_path + filename
         # write to file
         filestream = open(filename, 'w')
         filestream.write(content)
@@ -126,5 +131,9 @@ with ProEule() as app:
     app.args.add_argument('--dir',\
         help='default is the current working directory.\
         provide path to directory from current directory', action='store', dest='dir')
+    
+    app.args.add_argument('--overwrite',\
+        help='overwrites existing files', action='store_true')
+    
     app.run()
     init()
