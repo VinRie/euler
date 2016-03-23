@@ -6,6 +6,7 @@ ProEule is a commandline tool that initializes a Project Euler workspace for you
 """
 
 import cStringIO
+import os
 import re
 import pycurl
 from cement.core.foundation import CementApp
@@ -13,6 +14,7 @@ from cement.utils.misc import init_defaults
 
 defaults = init_defaults('ProEule')
 defaults['ProEule']['lang'] = 'none'
+defaults['ProEule']['dir'] = ''
 
 class ProEule(CementApp):
     class Meta:
@@ -25,6 +27,23 @@ def init():
     # general setup
     euler_base_url = 'https://projecteuler.net/problem='
     euler_problem_count = 542
+    
+
+    config_dir = app.config.get('ProEule', 'dir')
+    
+    if not config_dir.startswith('/'):
+        config_dir = '/' + config_dir 
+   
+    if not config_dir.endswith('/'):
+        config_dir = config_dir + '/'
+
+
+    directory_path = os.getcwd() + config_dir
+
+   
+    if not os.path.isdir(directory_path):
+        print directory_path + ' is not a directory'
+        return 
 
     # language specific setup
     # print app.config.get('ProEule','lang')
@@ -90,6 +109,7 @@ def init():
         else:
             filename = "problem" + str(problem_number) + file_ending
 
+        filename = directory_path + filename
         # write to file
         filestream = open(filename, 'w')
         filestream.write(content)
@@ -101,6 +121,10 @@ def init():
                 + str(euler_problem_count)
 
 with ProEule() as app:
-    app.args.add_argument('--lang', action='store', dest='lang')
+    app.args.add_argument('--lang', \
+        help='default is none, ruby and python are supported', action='store', dest='lang')
+    app.args.add_argument('--dir',\
+        help='default is the current working directory.\
+        provide path to directory from current directory', action='store', dest='dir')
     app.run()
     init()
