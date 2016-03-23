@@ -2,7 +2,7 @@
 ProEule is a commandline tool that initializes a Project Euler workspace for you. 
  - downloads Problem descriptions for all problems
  - creates language specific templates,
-    containing the description of the problem as multiline comment
+ containing the description of the problem as multiline comment
 """
 
 import cStringIO
